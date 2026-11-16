@@ -1,10 +1,13 @@
 name: Android Release (Play için imzalı AAB)
 
-# Çalıştırmadan önce depo ayarlarına şu gizli anahtarları ekle (Settings → Secrets and variables → Actions):
-#   KEYSTORE_BASE64  : keystore dosyasının base64 hali  (PowerShell: [Convert]::ToBase64String([IO.File]::ReadAllBytes("sokakkrali.keystore")) | Set-Clipboard)
-#   KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
-# Keystore üretmek (bir kez, güvenle sakla; kaybolursa Play'de güncelleme yapılamaz):
-#   keytool -genkeypair -v -keystore sokakkrali.keystore -alias sokakkrali -keyalg RSA -keysize 2048 -validity 10000
+# İki mod:
+#  1) Depo gizli anahtarları varsa (KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD) onlarla imzalar.
+#  2) Yoksa CI içinde yeni bir yükleme anahtarı üretir, AAB/APK'yı onunla imzalar ve anahtarı + şifresini
+#     .github/ci-public-key.pem ile ŞİFRELEYEREK artifact'a koyar (yalnız özel anahtarı olan açabilir).
+#     Çözmek için (yerelde, özel anahtar play-paketi/ci-private-key.pem):
+#       openssl pkeyutl -decrypt -inkey ci-private-key.pem -in aeskey.enc -out aeskey.txt
+#       openssl enc -d -aes-256-cbc -pbkdf2 -in keystore.enc -out sokakkrali-upload.keystore -pass file:aeskey.txt
+#       openssl enc -d -aes-256-cbc -pbkdf2 -in password.enc -pass file:aeskey.txt
 
 on:
   workflow_dispatch:
@@ -34,26 +37,45 @@ jobs:
         run: |
           node build-www.js
           npx cap sync android
-      - name: Keystore'u yaz
+      - name: İmza anahtarını hazırla
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD_SECRET: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS_SECRET: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD_SECRET: ${{ secrets.KEY_PASSWORD }}
         run: |
-          if [ -z "$KEYSTORE_BASE64" ]; then echo "KEYSTORE_BASE64 gizli anahtarı yok; imzasız derlenecek"; else echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"; fi
-      - name: AAB ve APK derle
-        env:
-          KEYSTORE_FILE: ${{ runner.temp }}/release.keystore
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          set -e
+          KS="$RUNNER_TEMP/release.keystore"
+          mkdir -p out
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$KS"
+            echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD_SECRET" >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=$KEY_ALIAS_SECRET" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=$KEY_PASSWORD_SECRET" >> "$GITHUB_ENV"
+            echo "Depo gizli anahtarındaki keystore kullanılıyor"
+          else
+            PASS=$(openssl rand -hex 12)
+            echo "::add-mask::$PASS"
+            keytool -genkeypair -keystore "$KS" -storetype PKCS12 -storepass "$PASS" -keypass "$PASS" -alias sokakkrali -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Sokak Krali, O=Sokak Krali, C=TR"
+            echo "KEYSTORE_PASSWORD=$PASS" >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=sokakkrali" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=$PASS" >> "$GITHUB_ENV"
+            AESKEY=$(openssl rand -hex 32); echo "::add-mask::$AESKEY"
+            openssl enc -aes-256-cbc -pbkdf2 -in "$KS" -out out/keystore.enc -pass pass:"$AESKEY"
+            printf '%s' "$PASS" | openssl enc -aes-256-cbc -pbkdf2 -out out/password.enc -pass pass:"$AESKEY"
+            printf '%s' "$AESKEY" | openssl pkeyutl -encrypt -pubin -inkey .github/ci-public-key.pem -out out/aeskey.enc
+            echo "CI içinde yeni keystore üretildi ve şifrelenerek artifact'a eklendi"
+          fi
+          echo "KEYSTORE_FILE=$KS" >> "$GITHUB_ENV"
+      - name: AAB ve APK derle (imzalı)
         run: |
           cd android
           chmod +x gradlew
           ./gradlew bundleRelease assembleRelease --no-daemon
-          cp app/build/outputs/bundle/release/app-release.aab ../SokakKrali-play.aab
-          cp app/build/outputs/apk/release/app-release*.apk ../SokakKrali-release.apk || true
+          cp app/build/outputs/bundle/release/app-release.aab ../out/SokakKrali-play.aab
+          cp app/build/outputs/apk/release/app-release.apk ../out/SokakKrali-release.apk
+          ls -la ../out
       - uses: actions/upload-artifact@v4
         with:
           name: SokakKrali-play
-          path: |
-            SokakKrali-play.aab
-            SokakKrali-release.apk
+          path: out/
