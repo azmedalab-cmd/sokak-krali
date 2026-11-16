@@ -1,0 +1,86 @@
+Play Console → Mağaza kaydı → "Çeviri ekle" ile her dili ekleyin; o dilin görselleri gorseller/<dil>/ klasöründe.
+
+==================== TÜRKÇE (tr-TR) — varsayılan ====================
+Ad: Sokak Kralı
+Kısa: Açık dünya 3D aksiyon: silahlar, polis, karteller, çeteler ve 104 parçalık radyo.
+Tam:
+Sokak Kralı, açık dünya bir 3D aksiyon oyunudur. Şehirde yürü, araba ve motosiklet sür, 62 silah topla, yıldız kazanıp polisten kaç, karteller arasında itibar kazan ve 75 kişilik kendi çeteni kur.
+
+• Koca bir şehir: yayalar, trafik, polis, SWAT, helikopter ve tanklar
+• 62 silah, 8 kategori; araçtan ateş, yakın dövüş animasyonları
+• Çete sistemi: isim, renk ve sembol; silah dağıt, araçla ya da yaya gelsinler; NPC çeteleriyle ittifak
+• 5 kartel: davet, patron görevleri, tetikçiler, kartel puanı
+• Karakter editörü ve kıyafet dükkânı
+• 104 parçalık radyo: trap, drill, rock, arabesk, techno, lo-fi, synthwave, boom bap
+• Yapay zekâ çete arkadaşı Rıza ile sohbet
+• 5 dil · Otomatik kayıt · 60'tan fazla hile kodu
+
+Telefonda sanal joystick ve düğmelerle oynanır. İnternet gerekmez. Reklam ve satın alma yoktur.
+
+==================== ENGLISH (en-US) ====================
+Name: Street King
+Short: Open-world 3D action: weapons, police, cartels, gangs and a 104-track radio.
+Full:
+Street King is an open-world 3D action game. Walk the city, drive cars and bikes, collect 62 weapons, earn wanted stars and escape the police, build reputation with cartels and run your own crew of up to 75.
+
+• A whole city: pedestrians, traffic, police, SWAT, helicopters and tanks
+• 62 weapons in 8 categories, drive-by shooting, melee animations
+• Crew system: name, color and symbol; hand out weapons, escort by car or on foot; ally with NPC gangs
+• 5 cartels: invitations, boss missions, hit squads, cartel score
+• Character editor and clothing shop
+• 104-track radio: trap, drill, rock, arabesk, techno, lo-fi, synthwave, boom bap
+• Chat with Rıza, your AI crew buddy
+• 5 languages · Auto-save · 60+ cheat codes
+
+Touch controls on phones. No internet required. No ads, no purchases.
+
+==================== DEUTSCH (de-DE) ====================
+Name: Straßenkönig
+Kurz: Open-World-3D-Action: Waffen, Polizei, Kartelle, Gangs und ein Radio mit 104 Titeln.
+Vollständig:
+Straßenkönig ist ein Open-World-3D-Actionspiel. Lauf durch die Stadt, fahre Autos und Motorräder, sammle 62 Waffen, verdiene Fahndungssterne und entkomme der Polizei, baue Ansehen bei den Kartellen auf und führe deine eigene Gang mit bis zu 75 Mitgliedern.
+
+• Eine ganze Stadt: Passanten, Verkehr, Polizei, SWAT, Hubschrauber und Panzer
+• 62 Waffen in 8 Kategorien, Drive-by-Schüsse, Nahkampf-Animationen
+• Gang-System: Name, Farbe und Symbol; Waffen verteilen, Begleitung per Auto oder zu Fuß; Bündnisse mit NPC-Gangs
+• 5 Kartelle: Einladungen, Boss-Missionen, Killerkommandos, Kartellpunkte
+• Charakter-Editor und Kleiderladen
+• Radio mit 104 Titeln: Trap, Drill, Rock, Arabesk, Techno, Lo-Fi, Synthwave, Boom Bap
+• Chat mit Rıza, deinem KI-Gangkumpel
+• 5 Sprachen · Autospeichern · über 60 Cheat-Codes
+
+Touch-Steuerung auf dem Handy. Kein Internet nötig. Keine Werbung, keine Käufe.
+
+==================== УКРАЇНСЬКА (uk-UA) ====================
+Назва: Король вулиць
+Коротко: Відкритий світ, 3D-екшн: зброя, поліція, картелі, банди та радіо зі 104 треками.
+Повний опис:
+Король вулиць — 3D-екшн у відкритому світі. Ходи містом, керуй авто й мотоциклами, збирай 62 види зброї, здобувай зірки розшуку й тікай від поліції, заробляй репутацію в картелях і керуй власною бандою до 75 осіб.
+
+• Ціле місто: перехожі, трафік, поліція, SWAT, гелікоптери й танки
+• 62 види зброї у 8 категоріях, стрільба з авто, анімації ближнього бою
+• Система банди: назва, колір і символ; роздавай зброю, супровід на авто чи пішки; союзи з NPC-бандами
+• 5 картелів: запрошення, місії боса, загони кілерів, очки картелю
+• Редактор персонажа та магазин одягу
+• Радіо зі 104 треками: трап, дрил, рок, арабеск, техно, лоу-фай, синтвейв, бум-беп
+• Чат із Різою, ШІ-другом із банди
+• 5 мов · Автозбереження · понад 60 чит-кодів
+
+Сенсорне керування на телефоні. Інтернет не потрібен. Без реклами й покупок.
+
+==================== ESPAÑOL (es-ES) ====================
+Nombre: Rey de la Calle
+Corta: Acción 3D en mundo abierto: armas, policía, cárteles, bandas y una radio con 104 temas.
+Completa:
+Rey de la Calle es un juego de acción 3D en mundo abierto. Camina por la ciudad, conduce coches y motos, consigue 62 armas, gana estrellas de búsqueda y escapa de la policía, hazte un nombre entre los cárteles y dirige tu propia banda de hasta 75 miembros.
+
+• Una ciudad entera: peatones, tráfico, policía, SWAT, helicópteros y tanques
+• 62 armas en 8 categorías, disparos desde el coche, animaciones cuerpo a cuerpo
+• Sistema de banda: nombre, color y símbolo; reparte armas, escolta en coche o a pie; alianzas con bandas NPC
+• 5 cárteles: invitaciones, misiones del jefe, sicarios, puntos de cártel
+• Editor de personaje y tienda de ropa
+• Radio con 104 temas: trap, drill, rock, arabesk, techno, lo-fi, synthwave, boom bap
+• Chatea con Rıza, tu compañero de banda con IA
+• 5 idiomas · Guardado automático · más de 60 trucos
+
+Controles táctiles en el móvil. No necesita internet. Sin anuncios ni compras.
