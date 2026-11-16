@@ -8,7 +8,11 @@ function createWindow() {
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false }
   });
   Menu.setApplicationMenu(null);
-  win.loadFile('index.html');
+  // Önce canlı adres (her zaman son sürüm); internet yoksa paketteki yerel kopya
+  const LIVE_URL='https://azmedalab-cmd.github.io/sokak-krali/'; let fellBack=false;
+  const fallback=()=>{ if(fellBack) return; fellBack=true; win.loadFile('index.html'); };
+  win.webContents.on('did-fail-load',(e,code,desc,url,isMainFrame)=>{ if(isMainFrame && !fellBack) fallback(); });
+  win.loadURL(LIVE_URL).catch(fallback);
   // F11: tam ekran aç/kapat
   globalShortcut.register('F11', () => { win.setFullScreen(!win.isFullScreen()); });
   win.webContents.on('before-input-event', (e, input) => { if (input.key === 'F4' && input.alt) app.quit(); });

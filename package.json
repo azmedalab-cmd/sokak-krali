@@ -1,7 +1,7 @@
 {
   "name": "sokak-krali",
   "productName": "Sokak Kralı",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Açık dünya 3D aksiyon oyunu: silahlar, polis, karteller, çeteler.",
   "main": "electron.js",
   "author": "Sokak Kralı Ekibi",
@@ -64,5 +64,6 @@
       "category": "public.app-category.games"
     },
     "electronDist": "node_modules/electron/dist"
-  }
+  },
+  "homepage": "https://azmedalab-cmd.github.io/sokak-krali/"
 }
