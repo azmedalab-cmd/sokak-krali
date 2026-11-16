@@ -1,0 +1,43 @@
+name: iOS (Xcode projesi ve arşiv)
+
+# macOS çalıştırıcıda Capacitor iOS projesini üretir ve imzasız arşiv derler (derlenebilirlik testi).
+# App Store'a yükleme için Apple Developer hesabı, dağıtım sertifikası (.p12) ve App Store Connect API anahtarı gerekir;
+# bunlar eklenince "İmzalı dışa aktarma" adımındaki yorum satırları açılır.
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: iOS platformunu ekle ve senkronla
+        run: |
+          npm i --no-save @capacitor/ios
+          node build-www.js
+          [ -d ios ] || npx cap add ios
+          npx cap sync ios
+      - name: İmzasız arşiv derle (derlenebilirlik testi)
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO archive -archivePath "$RUNNER_TEMP/App.xcarchive" | tail -20
+      # - name: İmzalı dışa aktarma ve App Store'a yükleme (sertifika + API anahtarı eklenince)
+      #   env:
+      #     APPSTORE_API_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+      #     APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+      #     APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+      #   run: |
+      #     xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/App.xcarchive" -exportOptionsPlist ios/ExportOptions.plist -exportPath "$RUNNER_TEMP/export" -allowProvisioningUpdates
+      #     xcrun altool --upload-app -f "$RUNNER_TEMP/export/App.ipa" -t ios --apiKey "$APPSTORE_API_KEY_ID" --apiIssuer "$APPSTORE_ISSUER_ID"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-xcarchive
+          path: ${{ runner.temp }}/App.xcarchive
+          if-no-files-found: warn

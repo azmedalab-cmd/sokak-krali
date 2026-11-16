@@ -74,11 +74,39 @@ Notlar:
 
 ## C. Mobil (Android / iOS)
 
-Oyun klavye ve fare ister; mağazaya koymadan önce sanal joystick + ateş/nişan düğmeleri eklenmeli. O eklendikten sonra:
-- **Android**: Capacitor (`npm i @capacitor/core @capacitor/cli`, `npx cap init`, `npx cap add android`, Android Studio ile APK/AAB) → Google Play Console (tek seferlik 25 $).
-- **iOS**: aynı Capacitor projesi, Mac + Xcode + Apple Developer (yıllık 99 $).
+Dokunmatik kontroller hazır (sol joystick, sağda bakış, ateş/nişan/zıpla/bin düğmeleri). Android projesi `android/` klasöründe (Capacitor); uygulama canlı siteyi yükler, yani site güncellenince uygulama da güncellenir.
+
+- **APK'yı bilgisayarsız derlemek**: GitHub → Actions → "Android APK" → Run workflow. Bittiğinde Artifacts'tan `SokakKrali-android` indir. `v*` etiketiyle push edersen APK otomatik Release'e eklenir.
+- **Bilgisayarda derlemek**: Android Studio kur, `node build-www.js && npx cap sync android && npx cap open android`, Build → APK.
+- **Google Play**: imzalı AAB gerekir: Android Studio → Build → Generate Signed Bundle (kendi keystore'unu oluştur ve sakla) → Play Console (tek seferlik 25 $). Play ilkeleri gereği uygulamanın çevrimdışı da çalışması istenirse `capacitor.config.json` içindeki `server.url` satırını silip `www/` paketini gömebilirsin.
+- **iOS**: `npx cap add ios` yalnız Mac'te; Xcode + Apple Developer (yıllık 99 $).
 
 ---
+
+## D. Google Play ve App Store (hesaplar senin adına açılmalı)
+
+Mağazalara yükleme hesap, kimlik doğrulama ve ücret istediği için senin yapman gereken adımlar şunlar; her şey hazır bekliyor:
+
+### Google Play (tek seferlik 25 $)
+1. https://play.google.com/console → Google hesabınla geliştirici hesabı aç (kimlik doğrulama 1-2 gün sürebilir).
+2. Bilgisayarında bir kez imza anahtarı üret ve **yedekle** (kaybolursa güncelleme yapılamaz):
+   ```
+   keytool -genkeypair -v -keystore sokakkrali.keystore -alias sokakkrali -keyalg RSA -keysize 2048 -validity 10000
+   ```
+   (keytool Android Studio ya da JDK ile gelir.)
+3. GitHub → depo → Settings → Secrets and variables → Actions → New secret: `KEYSTORE_BASE64` (dosyanın base64'ü: PowerShell `[Convert]::ToBase64String([IO.File]::ReadAllBytes("sokakkrali.keystore")) | Set-Clipboard`), `KEYSTORE_PASSWORD`, `KEY_ALIAS` (sokakkrali), `KEY_PASSWORD`.
+4. GitHub → Actions → **"Android Release (Play için imzalı AAB)"** → Run workflow → bitince Artifacts'tan `SokakKrali-play` indir (içinde `SokakKrali-play.aab`).
+5. Play Console → Uygulama oluştur (ad: Sokak Kralı, oyun, ücretsiz) → **Üretim → Yeni sürüm → AAB'yi yükle**. İlk yüklemede "Play App Signing" kabul et.
+6. Mağaza kaydı: `store/listeleme.md` içindeki metinler, `store/icon-512.png`, `store/feature-graphic.png`, `store/screenshots/` (en az 2 telefon ekran görüntüsü).
+7. Uygulama içeriği: gizlilik politikası adresi `https://azmedalab-cmd.github.io/sokak-krali/privacy.html`, reklam yok, içerik derecelendirme anketi (şiddet: evet), veri güvenliği: veri toplanmıyor, hedef kitle 16+.
+8. İncelemeye gönder; ilk inceleme genelde 1-7 gün.
+
+### App Store (yıllık 99 $, Mac gerekir)
+1. https://developer.apple.com → Apple Developer Program'a katıl.
+2. Bir Mac'te (ya da GitHub'daki **"iOS (Xcode projesi ve arşiv)"** iş akışı projeyi üretir): `npm i @capacitor/ios && node build-www.js && npx cap add ios && npx cap sync ios && npx cap open ios`.
+3. Xcode'da Signing & Capabilities → Team seç; Bundle ID `com.sokakkrali.game`; Product → Archive → Distribute App → App Store Connect.
+4. https://appstoreconnect.apple.com → Yeni uygulama → ekran görüntüleri (6.7" iPhone ve 12.9" iPad), açıklama (`store/listeleme.md`), gizlilik politikası adresi, yaş derecesi 17+ → İncelemeye gönder (1-3 gün).
+5. Apple, web içeriği gömen oyunlarda tam ekran ve dokunmatik kontrollerin düzgün çalışmasını ister; oyun bunları karşılıyor.
 
 ## Sürüm çıkarırken kontrol listesi
 1. `sw.js` içindeki `CACHE='sokakkrali-vXX'` numarasını artır (eski önbellek temizlensin).

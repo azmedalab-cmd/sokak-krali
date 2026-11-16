@@ -1,0 +1,59 @@
+name: Android Release (Play için imzalı AAB)
+
+# Çalıştırmadan önce depo ayarlarına şu gizli anahtarları ekle (Settings → Secrets and variables → Actions):
+#   KEYSTORE_BASE64  : keystore dosyasının base64 hali  (PowerShell: [Convert]::ToBase64String([IO.File]::ReadAllBytes("sokakkrali.keystore")) | Set-Clipboard)
+#   KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+# Keystore üretmek (bir kez, güvenle sakla; kaybolursa Play'de güncelleme yapılamaz):
+#   keytool -genkeypair -v -keystore sokakkrali.keystore -alias sokakkrali -keyalg RSA -keysize 2048 -validity 10000
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['play-*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm ci
+      - name: Web dosyaları ve Capacitor senkronu
+        run: |
+          node build-www.js
+          npx cap sync android
+      - name: Keystore'u yaz
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then echo "KEYSTORE_BASE64 gizli anahtarı yok; imzasız derlenecek"; else echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"; fi
+      - name: AAB ve APK derle
+        env:
+          KEYSTORE_FILE: ${{ runner.temp }}/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease assembleRelease --no-daemon
+          cp app/build/outputs/bundle/release/app-release.aab ../SokakKrali-play.aab
+          cp app/build/outputs/apk/release/app-release*.apk ../SokakKrali-release.apk || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SokakKrali-play
+          path: |
+            SokakKrali-play.aab
+            SokakKrali-release.apk
