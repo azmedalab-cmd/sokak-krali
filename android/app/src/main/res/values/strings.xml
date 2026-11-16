@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sokak Kralı</string>
+    <string name="title_activity_main">Sokak Kralı</string>
+    <string name="package_name">com.sokakkrali.game</string>
+    <string name="custom_url_scheme">com.sokakkrali.game</string>
+</resources>

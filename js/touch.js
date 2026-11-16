@@ -3,7 +3,7 @@ var Touch={on:false,run:false,joy:null,look:null,ui:null,R:52};
 function isTouchDevice(){ if(/[?&]touch=0/.test(location.search)) return false; if(/[?&]touch=1/.test(location.search)) return true; return ('ontouchstart' in window || navigator.maxTouchPoints>0) && /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent); }
 function initTouch(){
   if(!isTouchDevice()) return; Touch.on=true; document.body.classList.add('touch');
-  const ui=document.createElement('div'); ui.id='touchui'; Touch.ui=ui;
+  const ui=document.createElement('div'); ui.id='touchui'; ui.className='hide'; Touch.ui=ui;
   ui.innerHTML='<div id="joyZone"><div id="joyBase"><div id="joyKnob"></div></div></div><div id="lookZone"></div>'+
     '<div id="tbtns"><button data-a="fire" class="big">ATEŞ</button><button data-a="aim">NİŞAN</button><button data-a="jump">ZIPLA<br><small>FREN</small></button><button data-a="use">E<br><small>BİN/KONUŞ</small></button><button data-a="run">KOŞ</button></div>'+
     '<div id="ttop"><button data-a="tab">SİLAH</button><button data-a="next">↻</button><button data-a="cam">KAMERA</button><button data-a="radio">RADYO</button><button data-a="shop">MAĞAZA</button><button data-a="map">HARİTA</button><button data-a="crew">ÇETE</button><button data-a="chat">💬</button><button data-a="pause">⏸</button></div>';

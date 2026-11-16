@@ -1,0 +1,13 @@
+{
+  "appId": "com.sokakkrali.game",
+  "appName": "Sokak Kralı",
+  "webDir": "www",
+  "server": {
+    "url": "https://azmedalab-cmd.github.io/sokak-krali/",
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b0d10"
+  }
+}
