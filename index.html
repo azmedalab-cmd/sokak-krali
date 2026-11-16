@@ -209,5 +209,5 @@
   document.getElementById('overlay').addEventListener('click', ()=>{ if(S.renderer && typeof MENU!=='undefined' && MENU.started) resumeGame(); });
   document.getElementById('btnMenu').addEventListener('click', e=>{ e.stopPropagation(); returnToMenu(); });
   // PWA: kendi sitende / uygulamada çevrimdışı önbellek (claude.ai artifact sayfasında kapalı)
-  if('serviceWorker' in navigator && !/claude/i.test(location.hostname) && (location.protocol==='https:'||location.hostname==='localhost')){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+  if('serviceWorker' in navigator && !/claude/i.test(location.hostname) && (location.protocol==='https:'||location.hostname==='localhost')){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); navigator.serviceWorker.addEventListener('controllerchange',()=>{ try{ if(!(typeof MENU!=='undefined'&&MENU.started) && !sessionStorage.getItem('sk_reloaded')){ sessionStorage.setItem('sk_reloaded','1'); location.reload(); } }catch(e){} }); }
 </script>
