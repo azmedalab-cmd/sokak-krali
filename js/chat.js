@@ -2,8 +2,8 @@
 var Chat={open:false,log:[],turns:[],busy:false,sample:null,room:null,named:null,ghosts:{},lastMsg:'',lastTs:0,frame:0,uid:'',refreshT:0};
 function initChat(){
   Chat.uid=makeCode(); const el=document.getElementById('chat');
-  el.innerHTML='<div class="log"></div><div class="inp"><input id="chatinput" maxlength="160" placeholder="'+T('chatHint')+'" autocomplete="off"><button id="chatsend">'+T('send')+'</button></div>';
-  el.querySelector('#chatsend').addEventListener('click',sendChat);
+  el.innerHTML='<div class="log"></div><div class="inp"><input id="chatinput" maxlength="160" placeholder="'+T('chatHint')+'" autocomplete="off"><button id="chatsend">'+T('send')+'</button><button id="chatclose" type="button">✕</button></div>';
+  el.querySelector('#chatsend').addEventListener('click',sendChat); el.querySelector('#chatclose').addEventListener('click',()=>toggleChat(false));
   const inp=el.querySelector('#chatinput'); inp.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Enter') sendChat(); if(e.key==='Escape'||e.code==='Escape') toggleChat(false); }); inp.addEventListener('keyup',e=>e.stopPropagation());
   if(typeof claude!=='undefined' && claude && claude.use){ try{ claude.use('sample').then(s=>{ Chat.sample=s; }).catch(()=>{}); }catch(e){} }
   if(MENU.mode==='ai') spawnAIFriend();

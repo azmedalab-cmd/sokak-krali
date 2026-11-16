@@ -144,7 +144,7 @@ function updateHUD(){
   H.crew.textContent=cinfo+(S.crew.length?'  '+(S.gang?S.gang.symbol+' '+S.gang.name:T('crew'))+': '+S.crew.length+'/'+(typeof CREW_MAX!=='undefined'?CREW_MAX:75):'')+(S.cartelPts?'  KP '+S.cartelPts:'')+(S.feared?'  ☠ KORKULAN':'')+(guards?'  '+T('guards')+': '+guards:'')+(army?'  '+T('army')+': '+army:'')+(S.bribePolice||S.bribeSwat?'  '+T('bribe')+': P%'+S.bribePolice+' S%'+S.bribeSwat:'');
   H.cross.hidden=!!Player.car && !Player.aiming;
   const m=S.mission; H.mission.hidden=!m; if(m){ H.mtitle.textContent=m.title; H.mobj.textContent=m.obj; H.mtime.textContent=Math.ceil(m.timer)+' sn'; }
-  const rs=Player.car && typeof Radio!=='undefined' && Radio.showT>0; H.radio.hidden=!rs; if(rs) H.radio.textContent='♪ '+radioName();
+  const rs=typeof Radio!=='undefined' && Radio.showT>0; H.radio.hidden=!rs; if(rs) H.radio.textContent='♪ '+radioName();
   if(S.subtitle){ S.subtitle.t-=S.dt; H.sub.textContent=S.subtitle.text; H.sub.hidden=false; if(S.subtitle.t<=0) S.subtitle=null; } else H.sub.hidden=true;
 }
 function drawMinimap(){
@@ -205,6 +205,7 @@ function init(){
   S.scene=new THREE.Scene(); S.camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,900);
   const resize=()=>{ r.setSize(innerWidth,innerHeight); S.camera.aspect=innerWidth/innerHeight; S.camera.updateProjectionMatrix(); if(typeof resizeFX==='function') resizeFX(r); }; window.addEventListener('resize',resize); resize();
   loadPrefs(); renderMenu(); document.getElementById('overlay').hidden=true;
+  if(typeof initTouch==='function') initTouch();
 }
 function price(p){ return Math.round(p*(S.diff||1)); }
 function reward(r){ return Math.round(r/(S.diff||1)); }
@@ -230,7 +231,7 @@ function startGame(){
     sirenUpdate(S.cars.some(c=>c.police&&c.chase&&!c.dead&&dist2D(c.pos,Player.pos)<120),dt);
     engineUpdate(!!Player.car && !S.dead, Player.car?Player.car.speed:0, dt); radioUpdate(dt);
     updateDayNight(dt); updateTrafficLights(dt); ambientUpdate(dt); if(S.headlight) S.headlight.intensity=(Player.car?1:0)*(0.2+1.6*(S.night||0));
-    updateCamera(dt); S.sky.position.copy(S.camera.position); updateHUD(); drawMinimap();
+    updateCamera(dt); S.sky.position.copy(S.camera.position); updateHUD(); drawMinimap(); if(Touch.on && Touch.tick) Touch.tick();
   };
   function loop(){
     requestAnimationFrame(loop); const dt=Math.min(0.05,clock.getDelta());
@@ -238,6 +239,7 @@ function startGame(){
     if(S.fx && typeof FX!=='undefined' && FX.ready) renderFX(r); else { r.setRenderTarget(null); r.render(S.scene,S.camera); }
   }
   if(typeof initFX==='function'){ try{ initFX(r); }catch(e){ console.warn('FX yok',e); S.fx=false; } }
+
   updateCamera(0); loop();
 }
 window.addEventListener('load',init);

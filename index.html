@@ -72,6 +72,26 @@
   #overlay .btns{display:flex;gap:10px;justify-content:center;margin-top:16px} #overlay .btns button{font-family:var(--font-display);font-size:22px;letter-spacing:.08em;padding:8px 22px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:var(--fg);cursor:pointer;border-radius:4px} #overlay .btns #btnResume{background:var(--accent);color:#111;border-color:var(--accent)} #overlay .btns button:hover{filter:brightness(1.15)}
   #overlay .warn{display:none;color:var(--danger);margin-top:12px;font-size:13px}
   @media (max-width:700px){ #overlay .warn{display:block} #overlay ul{grid-template-columns:1fr} }
+  body.touch #overlay .warn{display:block} body.touch #overlay ul{display:none} body.touch #menu details{display:none}
+  /* dokunmatik kontroller */
+  #touchui{position:fixed;inset:0;z-index:18;pointer-events:none;font-family:var(--font-display);letter-spacing:.06em;user-select:none;-webkit-user-select:none}
+  #touchui.hide{display:none}
+  #joyZone{position:absolute;left:0;bottom:0;width:42%;height:70%;pointer-events:auto;touch-action:none}
+  #joyBase{position:absolute;width:104px;height:104px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(0,0,0,.25);display:none} #joyBase.on{display:block} #joyKnob{position:absolute;left:30px;top:30px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.55)}
+  #lookZone{position:absolute;right:0;top:0;width:58%;height:100%;pointer-events:auto;touch-action:none}
+  #tbtns{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(3,64px);grid-auto-rows:64px;gap:10px;pointer-events:none}
+  #touchui button{pointer-events:auto;touch-action:none;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(8,10,14,.55);color:#fff;font-family:var(--font-display);font-size:13px;letter-spacing:.05em;line-height:1;padding:0} #touchui button small{font-size:8px;color:var(--muted);letter-spacing:0;font-family:var(--font-body)}
+  #tbtns button.big{grid-row:span 2;grid-column:3;width:64px;height:138px;border-radius:34px;background:rgba(255,59,59,.45);border-color:rgba(255,120,120,.7);font-size:16px;align-self:stretch}
+  #touchui button.press{background:rgba(255,210,59,.55);color:#111} #touchui button.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,210,59,.5) inset}
+  #ttop{position:absolute;left:50%;transform:translateX(-50%);top:calc(6px + env(safe-area-inset-top,0px));display:flex;gap:6px;pointer-events:none} #ttop button{width:auto;height:30px;border-radius:15px;padding:0 10px;font-size:12px}
+  #touchui.incar [data-a=aim],#touchui.incar [data-a=run]{opacity:.5}
+  body.touch #crewinfo{top:calc(42px + env(safe-area-inset-top,0px));font-size:13px} body.touch #hint{bottom:calc(170px + env(safe-area-inset-bottom,0px));font-size:15px} body.touch #subtitle{bottom:calc(200px + env(safe-area-inset-bottom,0px));font-size:13px}
+  body.touch #minimap{width:110px;height:110px;bottom:calc(200px + env(safe-area-inset-bottom,0px))} body.touch #health{bottom:calc(178px + env(safe-area-inset-bottom,0px));width:52px} body.touch #armor{bottom:calc(178px + env(safe-area-inset-bottom,0px));left:calc(max(16px,env(safe-area-inset-left,0px)) + 58px);width:52px}
+  body.touch #stars{font-size:20px;padding:2px 6px} body.touch #hate{top:calc(42px + env(safe-area-inset-top,0px));font-size:12px} body.touch #money{top:calc(60px + env(safe-area-inset-top,0px));font-size:22px} body.touch #weapon{top:calc(88px + env(safe-area-inset-top,0px));min-width:150px;grid-template-columns:60px auto;padding:4px 8px} body.touch #wicon{width:60px;height:25px} body.touch #wname{font-size:16px} body.touch #wammo{font-size:13px} body.touch #wlist{top:calc(150px + env(safe-area-inset-top,0px))} body.touch #wlist span{font-size:13px}
+  body.touch #chat{bottom:calc(230px + env(safe-area-inset-bottom,0px));width:min(300px,55vw);font-size:12px} body.touch #chat .log{max-height:90px}
+  body.touch #oshop,body.touch #crewcfg,body.touch #avatar{max-height:94vh;overflow:auto;font-size:13px;padding:10px 12px}
+  #oshop .close,#chat #chatclose{font:14px var(--font-body);padding:6px 10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:var(--fg);cursor:pointer;border-radius:4px}
+  #legend .close{margin-top:8px;font:13px var(--font-body);padding:6px 12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:var(--fg);cursor:pointer;border-radius:4px;width:100%}
   #overlay2{background:rgba(0,0,0,.55);flex-direction:column;pointer-events:none}
   #overlay2 h2{font-family:var(--font-display);font-size:min(22vw,150px);color:var(--danger);margin:0;letter-spacing:.08em;text-shadow:0 6px 30px rgba(0,0,0,.8)}
   #overlay2 p{font-size:18px;color:var(--fg);margin:8px 0 0}
@@ -174,7 +194,7 @@
     <p class="sub">Sarı halka: görev · Yeşil: silah dükkânı · Pembe: Pay'n'Spray · Mor noktalar: silahlı çete</p>
     <div class="cta">OYNAMAK İÇİN TIKLA</div>
     <div class="btns"><button id="btnResume" type="button">DEVAM ET</button><button id="btnMenu" type="button">ANA MENÜ (Esc)</button></div>
-    <div class="warn">Bu oyun klavye ve fare ister; telefonda oynanmaz.</div>
+    <div class="warn">Küçük ekran: dokunmatik kontroller açılır (sol: yürü · sağ: bak · düğmeler: ateş, nişan, bin). Klavye ve fare ile daha rahat oynanır.</div>
   </div>
 </div>
 <div id="overlay2" hidden><h2>ÖLDÜN</h2><p></p></div>
@@ -204,6 +224,7 @@
 <script src="js/shop.js"></script>
 <script src="js/save.js"></script>
 <script src="js/chat.js"></script>
+<script src="js/touch.js"></script>
 <script src="js/main.js"></script>
 <script>
   document.getElementById('overlay').addEventListener('click', ()=>{ if(S.renderer && typeof MENU!=='undefined' && MENU.started) resumeGame(); });

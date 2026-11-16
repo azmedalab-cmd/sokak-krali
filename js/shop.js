@@ -40,7 +40,11 @@ function renderShop(){
   let h='<div class="tabs">'+SHOP_TABS.map((x,i)=>'<span class="'+(i===ShopUI.tab?'on':'')+'">'+x.name+'</span>').join('')+'</div><div class="bal">Bakiye: $'+S.money+'</div><div class="items">';
   items.forEach((it,i)=>{ h+='<div class="it '+(i===ShopUI.sel?'sel':'')+(S.money<price(it.p)?' poor':'')+'"><span>'+it.n+'</span><b>$'+price(it.p)+'</b></div>'; });
   h+='</div><p class="desc">'+(items[ShopUI.sel]?items[ShopUI.sel].d:'')+'</p><p class="keys">← → sekme &nbsp; ↑ ↓ seç &nbsp; Enter satın al &nbsp; P / Esc kapat</p>';
-  document.getElementById('oshop').innerHTML=h;
+  h+='<div style="text-align:right;margin-top:8px"><button class="close" type="button">✕ Kapat</button></div>';
+  const el=document.getElementById('oshop'); el.innerHTML=h;
+  el.querySelectorAll('.tabs span').forEach((s,i)=>s.addEventListener('click',()=>{ ShopUI.tab=i; ShopUI.sel=0; renderShop(); }));
+  el.querySelectorAll('.it').forEach((d,i)=>d.addEventListener('click',()=>{ if(ShopUI.sel===i) shopKey('Enter'); else { ShopUI.sel=i; renderShop(); } }));
+  el.querySelector('.close').addEventListener('click',()=>{ if(ShopUI.open) toggleShop(); });
 }
 function shopKey(code){
   if(code==='ArrowLeft'){ ShopUI.tab=(ShopUI.tab+SHOP_TABS.length-1)%SHOP_TABS.length; ShopUI.sel=0; }
@@ -52,7 +56,7 @@ function shopKey(code){
 }
 // ---- Büyük harita + lejant ----
 var BigMap={open:false};
-function toggleBigMap(){ BigMap.open=!BigMap.open; document.getElementById('bigmap').hidden=!BigMap.open; if(BigMap.open){ drawBigMap(); if(!BigMap.bound){ BigMap.bound=true; document.getElementById('bigmapc').addEventListener('click',e=>{ const cv=e.currentTarget, r=cv.getBoundingClientRect(); const s=cv.width/(CITY.size+40); const x=(e.clientX-r.left)*(cv.width/r.width)/s-20, z=(e.clientY-r.top)*(cv.height/r.height)/s-20; S.waypoint={x:clamp(x,0,CITY.size),z:clamp(z,0,CITY.size)}; toast('Hedef işaretlendi'+(Player.car&&Player.car.driverNpc?' — şoför yola çıkıyor':'')); if(Player.car&&Player.car.driverNpc){ Player.car.hold=false; Player.car.dest=S.waypoint; } drawBigMap(); }); } } }
+function toggleBigMap(){ BigMap.open=!BigMap.open; document.getElementById('bigmap').hidden=!BigMap.open; if(BigMap.open){ drawBigMap(); if(!BigMap.bound){ BigMap.bound=true; document.getElementById('bigmap').addEventListener('click',e=>{ if(e.target.id==='bigmap' || e.target.classList.contains('close')) toggleBigMap(); }); document.getElementById('bigmapc').addEventListener('click',e=>{ const cv=e.currentTarget, r=cv.getBoundingClientRect(); const s=cv.width/(CITY.size+40); const x=(e.clientX-r.left)*(cv.width/r.width)/s-20, z=(e.clientY-r.top)*(cv.height/r.height)/s-20; S.waypoint={x:clamp(x,0,CITY.size),z:clamp(z,0,CITY.size)}; toast('Hedef işaretlendi'+(Player.car&&Player.car.driverNpc?' — şoför yola çıkıyor':'')); if(Player.car&&Player.car.driverNpc){ Player.car.hold=false; Player.car.dest=S.waypoint; } drawBigMap(); }); } } }
 var LEGEND=[['#ffffff','▲ Sen'],['#8a1a1a','Kuzey Karteli bölgesi/üyesi'],['#1a3a8a','Doğu Karteli bölgesi/üyesi'],['#8a6a1a','Batı Karteli bölgesi/üyesi'],['#5a1a7a','Merkez Karteli bölgesi/üyesi'],['#2a7a2a','Güney Karteli bölgesi/üyesi'],['#ffffff','■ Kartel patronu (üyeysen)'],['#40c8ff','● Hedef (haritaya tıkla)'],['#ffd23b','★ Önemli kişi (VIP)'],['#ff2a7a','■ Suikastçın (çatıda)'],['#e8e8e8','Yaya'],['#c070ff','Çete üyesi (silahlı)'],['#ff3030','Saldırgan / çatışan'],['#3bff6b','Kendi çeten'],['#4aa3ff','Polis'],['#4aa3ff','■ Polis arabası'],['#ff8a2a','■ Polis helikopteri'],['#8dff8d','■ Satın aldığın kuvvetler'],['#b8b8b8','■ Araç'],['#ff4040','■ Hastane'],['#4a7dff','■ Polis karakolu'],['#3bff6b','■ Silah dükkânı'],['#ff5fd2','■ Pay\'n\'Spray'],['#ffd23b','■ Görev noktası'],['#ffd23b','● Görev hedefi'],['#ff4040','· Sağlık'],['#c8a84a','· Mermi'],['#3bff6b','· Para'],['#3b8bff','· Zırh'],['#ffffff','· Silah']];
 function drawBigMap(){
   const cv=document.getElementById('bigmapc'); const W=cv.width=Math.min(innerWidth-360,innerHeight-80,900), Hh=cv.height=W; const g=cv.getContext('2d');
@@ -77,5 +81,5 @@ function drawBigMap(){
   g.fillStyle='#ff2a7a'; for(const h of S.hitmen) sq(h.pos.x,h.pos.z,'#ff2a7a',6);
   const pp=Player.car?Player.car.pos:Player.pos, a=Player.car?Player.car.heading:Player.facing;
   g.save(); g.translate(X(pp.x),Z(pp.z)); g.rotate(-a); g.fillStyle='#fff'; g.strokeStyle='#000'; g.lineWidth=2; g.beginPath(); g.moveTo(0,-9); g.lineTo(6,7); g.lineTo(-6,7); g.closePath(); g.fill(); g.stroke(); g.restore();
-  const lg=document.getElementById('legend'); if(!lg.dataset.done){ lg.innerHTML='<h3>LEJANT</h3>'+LEGEND.map(([c,t])=>'<div><i style="background:'+c+'"></i>'+t+'</div>').join('')+'<p>Haritaya tıkla: hedef koy (şoför oraya gider). M: kapat · ☠ nefret</p>'; lg.dataset.done='1'; }
+  const lg=document.getElementById('legend'); if(!lg.dataset.done){ lg.innerHTML='<h3>LEJANT</h3>'+'<button class="close" type="button">✕ Kapat (M)</button>'+LEGEND.map(([c,t])=>'<div><i style="background:'+c+'"></i>'+t+'</div>').join('')+'<p>Haritaya tıkla: hedef koy (şoför oraya gider). M: kapat · ☠ nefret</p>'; lg.dataset.done='1'; }
 }
