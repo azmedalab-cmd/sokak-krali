@@ -10,3 +10,7 @@ android/app/build/
 android/build/
 android/local.properties
 android/.idea/
+play-paketi/
+*.p12
+*.keystore
+*.jks
