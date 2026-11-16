@@ -1,0 +1,68 @@
+{
+  "name": "sokak-krali",
+  "productName": "Sokak Kralı",
+  "version": "1.0.0",
+  "description": "Açık dünya 3D aksiyon oyunu: silahlar, polis, karteller, çeteler.",
+  "main": "electron.js",
+  "author": "Sokak Kralı Ekibi",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "serve": "node .claude/serve.js",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable",
+    "dist:linux": "electron-builder --linux AppImage",
+    "dist:mac": "electron-builder --mac dmg"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.sokakkrali.game",
+    "productName": "Sokak Kralı",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "electron.js",
+      "manifest.json",
+      "sw.js",
+      "icon-192.png",
+      "icon-512.png",
+      "js/**/*",
+      "build/icon.png"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Sokak Kralı"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png",
+      "category": "Game"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.games"
+    },
+    "electronDist": "node_modules/electron/dist"
+  }
+}
